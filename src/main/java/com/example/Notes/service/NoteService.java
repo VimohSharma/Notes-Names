@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class NoteService {
@@ -19,9 +18,6 @@ public class NoteService {
     }
 
     public Note create(Note note) {
-        if (note.getSlug() == null || note.getSlug().isBlank()) {
-            note.setSlug(generateUniqueSlug());
-        }
         note.setCreatedAt(Instant.now());
         note.setUpdatedAt(Instant.now());
         return repo.save(note);
@@ -50,32 +46,9 @@ public class NoteService {
 
     public Note toggleShare(Long id) {
         Note note = getById(id);
-        if (!note.isPublic()) {
-            note.setPublic(true);
-            if (note.getSlug() == null || note.getSlug().isBlank()) {
-                note.setSlug(generateUniqueSlug());
-            }
-        } else {
-            note.setPublic(false);
-            note.setSlug(null);
-        }
+        note.setPublic(!note.isPublic());
         note.setUpdatedAt(Instant.now());
         return repo.save(note);
     }
-
-    public Optional<Note> findBySlug(String slug) {
-        return repo.findBySlug(slug);
-    }
-
-    private String generateUniqueSlug() {
-        String s = randomSlug();
-        while (repo.findBySlug(s).isPresent()) {
-            s = randomSlug();
-        }
-        return s;
-    }
-
-    private String randomSlug() {
-        return UUID.randomUUID().toString().replace("-", "").substring(0, 8);
-    }
 }
+
