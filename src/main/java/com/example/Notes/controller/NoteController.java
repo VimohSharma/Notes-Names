@@ -5,19 +5,21 @@ import com.example.Notes.repo.NoteRepo;
 import com.example.Notes.service.NoteService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
 
 import java.net.URI;
 import java.util.List;
-import java.util.UUID;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/notes")
 @CrossOrigin(origins = "*")
 public class NoteController {
     private final NoteService service;
-
-    public NoteController(NoteService service) {
+    private final NoteRepo noteRepo;
+    public NoteController(NoteService service, NoteRepo noteRepo) {
         this.service = service;
+        this.noteRepo = noteRepo;
     }
 
     @PostMapping
@@ -73,5 +75,6 @@ public class NoteController {
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 }
+
 
 
