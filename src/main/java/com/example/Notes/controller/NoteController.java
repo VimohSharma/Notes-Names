@@ -62,4 +62,12 @@ public class NoteController {
                 )))
                 .orElse(ResponseEntity.notFound().build());
     }
+    @GetMapping("/notes/public/{id}")
+    public ResponseEntity<Note> getPublicNoteById(@PathVariable Long id) {
+        return noteRepository.findById(id)
+            .filter(Note::isPublic) // only returning if it's shared
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
 }
+}
+
