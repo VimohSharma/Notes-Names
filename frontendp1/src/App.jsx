@@ -70,7 +70,7 @@ function App() {
       .then((res) => {
         const note = res.data;
         if (note.public) {
-          const shareUrl = `${window.location.origin}/share/${note.slug}`;
+          const shareUrl = `${window.location.origin}/share/${note.id}`;
           navigator.clipboard.writeText(shareUrl);
           alert("Share link copied: " + shareUrl);
         } else {
