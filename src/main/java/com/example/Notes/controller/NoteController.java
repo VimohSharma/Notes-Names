@@ -48,26 +48,30 @@ public class NoteController {
     }
 
     @PostMapping("/{id}/share")
-    public ResponseEntity<Note> toggleShare(@PathVariable Long id) {
-        return ResponseEntity.ok(service.toggleShare(id));
-    }
+    public ResponseEntity<?> toggleShare(@PathVariable Long id) {
+        Note note = service.toggleShare(id);
 
-    @GetMapping("/share/{slug}")
-    public ResponseEntity<?> getBySlug(@PathVariable String slug) {
-        return service.findBySlug(slug)
-                .map(n -> ResponseEntity.ok(java.util.Map.of(
-                        "title", n.getTitle(),
-                        "content", n.getContent(),
-                        "updatedAt", n.getUpdatedAt()
-                )))
-                .orElse(ResponseEntity.notFound().build());
+        if (note.isPublic()) {
+            String shareUrl = "https://notes-names-production.up.railway.app/api/notes/public/" + note.getId();
+            return ResponseEntity.ok(Map.of(
+                "message", "Note shared",
+                "shareUrl", shareUrl
+            ));
+        } else {
+            return ResponseEntity.ok(Map.of("message", "Note unshared"));
+        }
     }
-    @GetMapping("/notes/public/{id}")
-    public ResponseEntity<Note> getPublicNoteById(@PathVariable Long id) {
-        return noteRepository.findById(id)
-            .filter(Note::isPublic) // only returning if it's shared
-            .map(ResponseEntity::ok)
-            .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+     @GetMapping("/public/{id}")
+    public ResponseEntity<?> getPublicNoteById(@PathVariable Long id) {
+        return noteRepo.findById(id)
+                .filter(Note::isPublic)
+                .map(note -> ResponseEntity.ok(Map.of(
+                        "title", note.getTitle(),
+                        "content", note.getContent(),
+                        "updatedAt", note.getUpdatedAt()
+                )))
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
 }
-}
+
 
