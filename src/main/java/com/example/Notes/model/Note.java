@@ -16,9 +16,6 @@ public class Note {
     @Column(length = 2000)
     private String content;
 
-    @Column(unique = true)
-    private String slug;
-
     private boolean isPublic = false;
 
     private Instant createdAt;
@@ -27,11 +24,10 @@ public class Note {
     public Note() {
     }
 
-    public Note(Long id, String title, String content, String slug, boolean isPublic, Instant createdAt, Instant updatedAt) {
+    public Note(Long id, String title, String content, boolean isPublic, Instant createdAt, Instant updatedAt) {
         this.id = id;
         this.title = title;
         this.content = content;
-        this.slug = slug;
         this.isPublic = isPublic;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -61,14 +57,6 @@ public class Note {
         this.content = content;
     }
 
-    public String getSlug() {
-        return slug;
-    }
-
-    public void setSlug(String slug) {
-        this.slug = slug;
-    }
-
     public boolean isPublic() {
         return isPublic;
     }
@@ -93,3 +81,4 @@ public class Note {
         this.updatedAt = updatedAt;
     }
 }
+
